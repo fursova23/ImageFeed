@@ -1,6 +1,6 @@
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
     
     @IBOutlet private var tableView: UITableView!
     
@@ -40,7 +40,7 @@ extension ImagesListViewController: UITableViewDelegate {
 
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photosName.count
+        photosName.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -50,21 +50,13 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        configCell(for: imageListCell, with: indexPath)
+        imageListCell.configure(
+            image: UIImage(named: photosName[indexPath.row]),
+            date: dateFormatter.string(from: Date()),
+            isLiked: indexPath.row % 2 == 0
+        )
+        
         return imageListCell
     }
 }
 
-extension ImagesListViewController {
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let imageView = UIImage(named: photosName[indexPath.row]) else {
-            return
-        }
-        
-        cell.cellImage.image = imageView
-        cell.dateLabel.text = dateFormatter.string(from: Date())
-        
-        let likeImage = indexPath.row % 2 == 0 ? UIImage(named: "Active") : UIImage(named: "No Active")
-        cell.likeButton.setImage(likeImage, for: .normal)
-    }
-}
