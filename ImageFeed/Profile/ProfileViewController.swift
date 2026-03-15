@@ -2,10 +2,10 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
-    private var imageView: UIImageView = UIImageView(image: UIImage(named: "Photo"))
-    private var nameLabel: UILabel = UILabel()
-    private var tagLabel: UILabel = UILabel()
-    private var statusLabel: UILabel = UILabel()
+    private lazy var imageView: UIImageView = UIImageView(image: UIImage(resource: .photo))
+    private lazy var nameLabel: UILabel = UILabel()
+    private lazy var tagLabel: UILabel = UILabel()
+    private lazy var statusLabel: UILabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +22,12 @@ final class ProfileViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         
-        imageView.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor).isActive = true
-        imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
+        NSLayoutConstraint.activate([
+            imageView.widthAnchor.constraint(equalToConstant: 70),
+            imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
+            imageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32)
+        ])
     }
     
     private func setupNameLabel() {
@@ -35,9 +37,11 @@ final class ProfileViewController: UIViewController {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nameLabel)
         
-        nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
-        nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor).isActive = true
-        nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8).isActive = true
+        NSLayoutConstraint.activate([
+            nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+            nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8)
+        ])
     }
     
     private func setupTagLabel() {
@@ -47,9 +51,11 @@ final class ProfileViewController: UIViewController {
         tagLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tagLabel)
         
-        tagLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor).isActive = true
-        tagLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor).isActive = true
-        tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8).isActive = true
+        NSLayoutConstraint.activate([
+            tagLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+            tagLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            tagLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8)
+        ])
     }
     
     private func setupStatusLabel() {
@@ -59,14 +65,16 @@ final class ProfileViewController: UIViewController {
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(statusLabel)
         
-        statusLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor).isActive = true
-        statusLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor).isActive = true
-        statusLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8).isActive = true
+        NSLayoutConstraint.activate([
+            statusLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+            statusLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            statusLabel.topAnchor.constraint(equalTo: tagLabel.bottomAnchor, constant: 8)
+        ])
     }
     
     private func setupButton() {
         let button = UIButton.systemButton(
-            with: UIImage(systemName: "ipad.and.arrow.forward")!,
+            with: UIImage(systemName: ProfileViewConstants.exitIcon) ?? UIImage(),
             target: self,
             action: #selector(Self.didTapButton)
         )
@@ -74,11 +82,14 @@ final class ProfileViewController: UIViewController {
         button.tintColor = .red
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
-        button.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24).isActive = true
-        button.topAnchor.constraint(equalTo: view.topAnchor, constant: 99).isActive = true
-        button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            button.widthAnchor.constraint(equalToConstant: 44),
+            button.heightAnchor.constraint(equalToConstant: 44),
+            button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            button.topAnchor.constraint(equalTo: view.topAnchor, constant: 99),
+            button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
+        ])
+        
     }
     
     @objc
