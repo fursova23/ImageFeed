@@ -90,15 +90,15 @@
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                                 <color key="backgroundColor" name="YP Black (iOS)"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="143" id="13H-0X-SXo" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="143"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ImagesListCell" rowHeight="224" id="13H-0X-SXo" customClass="ImagesListCell" customModule="ImageFeed" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="50" width="393" height="224"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="13H-0X-SXo" id="9lB-1F-KxT">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="143"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="224"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cell Image" translatesAutoresizingMaskIntoConstraints="NO" id="rZn-pR-dsJ">
-                                                    <rect key="frame" x="20" y="15" width="353" height="113"/>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0" translatesAutoresizingMaskIntoConstraints="NO" id="rZn-pR-dsJ">
+                                                    <rect key="frame" x="16" y="4" width="361" height="216"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -107,7 +107,7 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EHM-fI-snh" userLabel="Like Button">
-                                                    <rect key="frame" x="329" y="15" width="44" height="44"/>
+                                                    <rect key="frame" x="333" y="4" width="44" height="44"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="44" id="B0J-t7-1Ke"/>
                                                         <constraint firstAttribute="width" constant="44" id="fOb-PK-8lo"/>
@@ -129,14 +129,14 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="EHM-fI-snh" firstAttribute="top" secondItem="rZn-pR-dsJ" secondAttribute="top" id="1Xk-hc-z0P"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="rZn-pR-dsJ" secondAttribute="trailing" id="1iO-Sw-EQi"/>
+                                                <constraint firstAttribute="trailing" secondItem="rZn-pR-dsJ" secondAttribute="trailing" constant="16" id="1iO-Sw-EQi"/>
                                                 <constraint firstItem="brJ-A7-vnU" firstAttribute="leading" secondItem="rZn-pR-dsJ" secondAttribute="leading" constant="8" id="EwT-6j-VtG"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="rZn-pR-dsJ" secondAttribute="bottom" id="Ift-cN-QYp"/>
-                                                <constraint firstItem="rZn-pR-dsJ" firstAttribute="top" secondItem="9lB-1F-KxT" secondAttribute="topMargin" id="LBI-VR-UMo"/>
+                                                <constraint firstAttribute="bottom" secondItem="rZn-pR-dsJ" secondAttribute="bottom" constant="4" id="Ift-cN-QYp"/>
+                                                <constraint firstItem="rZn-pR-dsJ" firstAttribute="top" secondItem="9lB-1F-KxT" secondAttribute="top" constant="4" id="LBI-VR-UMo"/>
+                                                <constraint firstItem="rZn-pR-dsJ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="brJ-A7-vnU" secondAttribute="trailing" constant="8" id="ejQ-fo-Zk0"/>
                                                 <constraint firstItem="rZn-pR-dsJ" firstAttribute="bottom" secondItem="brJ-A7-vnU" secondAttribute="bottom" constant="8" id="gf6-fb-fEd"/>
                                                 <constraint firstItem="rZn-pR-dsJ" firstAttribute="trailing" secondItem="EHM-fI-snh" secondAttribute="trailing" id="sEf-dZ-FJq"/>
-                                                <constraint firstItem="rZn-pR-dsJ" firstAttribute="leading" secondItem="9lB-1F-KxT" secondAttribute="leadingMargin" id="tLw-uO-GXN"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="brJ-A7-vnU" secondAttribute="trailing" id="vFK-1K-gGI"/>
+                                                <constraint firstItem="rZn-pR-dsJ" firstAttribute="leading" secondItem="9lB-1F-KxT" secondAttribute="leading" constant="16" id="tLw-uO-GXN"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="YP Black (iOS)"/>
@@ -187,8 +187,8 @@
                         </tabBarAppearance>
                     </tabBar>
                     <connections>
-                        <segue destination="Jfm-r8-WM3" kind="relationship" relationship="viewControllers" id="4i0-h5-ZUA"/>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="Ws5-Hv-sog"/>
+                        <segue destination="Jfm-r8-WM3" kind="relationship" relationship="viewControllers" id="4i0-h5-ZUA"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dYu-aR-qha" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -210,14 +210,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DEL-Gz-4X0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-860" y="683"/>
+            <point key="canvasLocation" x="-860" y="705"/>
         </scene>
     </scenes>
     <resources>
         <image name="0" width="1600" height="1059"/>
         <image name="Active" width="44" height="44"/>
         <image name="Backward" width="24" height="24"/>
-        <image name="Cell Image" width="1600" height="1059"/>
         <image name="Sharing" width="50" height="50"/>
         <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="75" height="49"/>

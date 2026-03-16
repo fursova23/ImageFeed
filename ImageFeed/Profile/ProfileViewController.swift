@@ -19,6 +19,7 @@ final class ProfileViewController: UIViewController {
     
     private func setupImageView() {
         imageView.tintColor = .gray
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         
@@ -79,7 +80,7 @@ final class ProfileViewController: UIViewController {
             action: #selector(Self.didTapButton)
         )
         
-        button.tintColor = .red
+        button.tintColor = .ypRedIOS
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         NSLayoutConstraint.activate([
