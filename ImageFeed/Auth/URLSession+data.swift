@@ -1,30 +1,45 @@
 import Foundation
 
 extension URLSession {
+    
     func data(
         for request: URLRequest,
-        completion: @escaping (Result<Data, Error>) -> Void) -> URLSessionTask {
-            let fulfillCOmpletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
-                DispatchQueue.main.async {
-                    completion(result)
-                }
+        completion: @escaping (Result<Data, Error>) -> Void)
+    -> URLSessionTask {
+        
+        let completeOnMain: (Result<Data, Error>) -> Void = { result in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+        
+        let task = dataTask(with: request, completionHandler: { data, response, error in
+            
+            if let error = error {
+                completeOnMain(.failure(NetworkError.urlRequestError(error)))
+                return
             }
             
-            let task = dataTask(with: request, completionHandler: { data, response, error in
-                if let data, let response, let statusCode = (response as? HTTPURLResponse)?.statusCode {
-                    if (200 ..< 300) ~= statusCode {
-                        fulfillCOmpletionOnTheMainThread(.success(data))
-                    } else {
-                        print(String(data: data, encoding: .utf8))
-                        fulfillCOmpletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
-                    }
-                } else if let error = error {
-                    fulfillCOmpletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
-                } else {
-                    fulfillCOmpletionOnTheMainThread(.failure(NetworkError.urlSessionError))
-                }
-            })
-            return task
-        }
+            guard
+                let data,
+                let httpResponse = response as? HTTPURLResponse
+            else {
+                completeOnMain(.failure(NetworkError.urlSessionError))
+                return
+            }
+            
+            let statusCode = httpResponse.statusCode
+            
+            guard (200 ..< 300).contains(statusCode) else {
+                print(String(data: data, encoding: .utf8))
+                completeOnMain(.failure(NetworkError.httpStatusCode(statusCode)))
+                return
+            }
+            
+            completeOnMain(.success(data))
+        })
+        
+        return task
+    }
 }
 

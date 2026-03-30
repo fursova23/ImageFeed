@@ -1,28 +1,39 @@
 import UIKit
 
+// MARK: - AuthViewController
+
 final class AuthViewController: UIViewController {
+    
+    // MARK: - Properties
     
     weak var delegate: AuthViewControllerDelegate?
     
     private let oauth2Service = OAuth2Service.shared
     
+    // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureBackButton()
     }
     
+    // MARK: - Navigation
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == WebViewConstants.showWebViewSegueIdentifier {
-            guard let webViewViewController = segue.destination as? WebViewViewController else {
-                assertionFailure("Failed to prepare for \(WebViewConstants.showWebViewSegueIdentifier)")
-                return
-            }
-            webViewViewController.delegate = self
-        } else {
+        guard segue.identifier == WebViewConstants.showWebViewSegueIdentifier else {
             super.prepare(for: segue, sender: sender)
+            return
         }
+        
+        guard let webViewViewController = segue.destination as? WebViewViewController else {
+            assertionFailure("Failed to prepare for \(WebViewConstants.showWebViewSegueIdentifier)")
+            return
+        }
+        
+        webViewViewController.delegate = self
     }
+    
+    // MARK: - Private Methods
     
     private func configureBackButton() {
         navigationController?.navigationBar.backIndicatorImage = UIImage(resource: .navBackButton)
@@ -33,9 +44,12 @@ final class AuthViewController: UIViewController {
     
 }
 
+// MARK: - WebViewViewControllerDelegate
+
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         navigationController?.popViewController(animated: true)
+        
         oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
             guard let self else { return }
             
