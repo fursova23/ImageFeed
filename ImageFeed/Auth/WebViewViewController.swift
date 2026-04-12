@@ -8,6 +8,8 @@ final class WebViewViewController: UIViewController {
     
     weak var delegate: WebViewViewControllerDelegate?
     
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
@@ -18,13 +20,23 @@ final class WebViewViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self else { return }
+                 self.updateProgress()
+             }
         )
-        updateProgress()
+        
+        // «Старое» API для KVO:
+        //        webView.addObserver(
+        //            self,
+        //            forKeyPath: #keyPath(WKWebView.estimatedProgress),
+        //            options: .new,
+        //            context: nil
+        //        )
+        //        updateProgress()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

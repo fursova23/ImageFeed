@@ -7,6 +7,62 @@ final class ProfileViewController: UIViewController {
     private lazy var tagLabel: UILabel = UILabel()
     private lazy var statusLabel: UILabel = UILabel()
     
+    private final let profileService = ProfileService.shared
+    private final let profileImageService = ProfileImageService.shared
+    
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+// "Старое" API NotificationCenter
+//    override init(nibName: String?, bundle: Bundle?) {
+//        super.init(nibName: nibName, bundle: bundle)
+//        addObserver()
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//        addObserver()
+//    }
+//    
+//    deinit {
+//        removeObserver()
+//    }
+//    
+//    private func addObserver() {
+//        NotificationCenter.default.addObserver(
+//            self,
+//            selector: #selector(updateAvatar(notification:)),
+//            name: ProfileImageService.didChangeNotification,
+//            object: nil
+//        )
+//    }
+//    
+//    private func removeObserver() {
+//        NotificationCenter.default.removeObserver(
+//            self,
+//            name: ProfileImageService.didChangeNotification,
+//            object: nil
+//        )
+//    }
+//    
+//    @objc
+//    private func updateAvatar(notification: Notification) {
+//        guard
+//            isViewLoaded,
+//            let userInfo = notification.userInfo,
+//            let profileImageURL = userInfo["URL"] as? String,
+//            let url = URL(string: profileImageURL)
+//        else { return }
+//        
+//        // TODO Kingfisher
+//    }
+    
+    private func updateAvatar() {
+        guard let profileImageURL = profileImageService.avatarURL,
+              let url = URL(string: profileImageURL)
+        else { return }
+        // TODO Обновить аватар, используя Kingfisher
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -15,6 +71,38 @@ final class ProfileViewController: UIViewController {
         setupTagLabel()
         setupStatusLabel()
         setupButton()
+        
+//        if let avatarURL = profileImageService.avatarURL,
+//           let url = URL(string: avatarURL) {
+//            // TODO
+//        }
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) {
+            [weak self] _ in
+            guard let self else { return }
+            self.updateAvatar()
+        }
+        updateAvatar()
+        
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
+    }
+    
+    private func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name.isEmpty
+        ? "Имя не указано"
+        : profile.name
+        tagLabel.text = profile.loginName.isEmpty
+        ? "@неизвестный_пользователь"
+        : profile.loginName
+        statusLabel.text = (profile.bio?.isEmpty ?? true)
+        ? "Профиль не заполнен"
+        : profile.bio
     }
     
     private func setupImageView() {

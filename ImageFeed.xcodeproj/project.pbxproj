@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EF19B21F2F6EECF5005690CA /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF19B21E2F6EECF5005690CA /* WebKit.framework */; };
-		EFF9EA512F8291AE00837266 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = EFF9EA502F8291AE00837266 /* ProgressHUD */; };
+		EFF9EAE62F8308BB00837266 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = EFF9EAE52F8308BB00837266 /* ProgressHUD */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,7 +72,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EF19B21F2F6EECF5005690CA /* WebKit.framework in Frameworks */,
-				EFF9EA512F8291AE00837266 /* ProgressHUD in Frameworks */,
+				EFF9EAE62F8308BB00837266 /* ProgressHUD in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,7 +142,7 @@
 			);
 			name = ImageFeed;
 			packageProductDependencies = (
-				EFF9EA502F8291AE00837266 /* ProgressHUD */,
+				EFF9EAE52F8308BB00837266 /* ProgressHUD */,
 			);
 			productName = ImageFeed;
 			productReference = EFEBBCF82F52EADE00B88F93 /* ImageFeed.app */;
@@ -227,7 +227,7 @@
 			mainGroup = EFEBBCEF2F52EADE00B88F93;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				EFF9EA4F2F8291AE00837266 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
+				EFF9EAE42F8308BB00837266 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EFEBBCF92F52EADE00B88F93 /* Products */;
@@ -612,20 +612,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		EFF9EA4F2F8291AE00837266 /* XCRemoteSwiftPackageReference "ProgressHUD" */ = {
+		EFF9EAE42F8308BB00837266 /* XCRemoteSwiftPackageReference "ProgressHUD" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/relatedcode/ProgressHUD";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 15.0.1;
+				minimumVersion = 14.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EFF9EA502F8291AE00837266 /* ProgressHUD */ = {
+		EFF9EAE52F8308BB00837266 /* ProgressHUD */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EFF9EA4F2F8291AE00837266 /* XCRemoteSwiftPackageReference "ProgressHUD" */;
+			package = EFF9EAE42F8308BB00837266 /* XCRemoteSwiftPackageReference "ProgressHUD" */;
 			productName = ProgressHUD;
 		};
 /* End XCSwiftPackageProductDependency section */

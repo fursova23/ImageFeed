@@ -49,12 +49,12 @@ final class AuthViewController: UIViewController {
 
 extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        UIBlockingProgressHUD.show()
+        
         navigationController?.popViewController(animated: true)
-//        vc.dismiss(animated: true)
-        ProgressHUD.animate()
-//        sleep(10)
+        
         oauth2Service.fetchOAuthToken(code: code) { [weak self] result in
-            ProgressHUD.dismiss()
+            UIBlockingProgressHUD.dismiss()
             
             guard let self else { return }
             
@@ -62,12 +62,25 @@ extension AuthViewController: WebViewViewControllerDelegate {
             case .success:
                 self.delegate?.didAuthenticate(self)
             case .failure(let error):
-                print("Не удалось получить токен: \(error.localizedDescription)")
+                print("[webViewViewController]: Не удалось получить токен - \(error.localizedDescription)")
+                self.showAuthErrorAlert()
             }
         }
     }
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         vc.dismiss(animated: true)
+    }
+}
+
+extension AuthViewController {
+    func showAuthErrorAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Ок", style: .default))
+        present(alert, animated: true)
     }
 }
