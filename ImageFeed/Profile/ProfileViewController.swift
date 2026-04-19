@@ -1,8 +1,9 @@
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
-    private lazy var imageView: UIImageView = UIImageView(image: UIImage(resource: .photo))
+    private lazy var imageView: UIImageView = UIImageView()
     private lazy var nameLabel: UILabel = UILabel()
     private lazy var tagLabel: UILabel = UILabel()
     private lazy var statusLabel: UILabel = UILabel()
@@ -12,55 +13,39 @@ final class ProfileViewController: UIViewController {
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
-// "Старое" API NotificationCenter
-//    override init(nibName: String?, bundle: Bundle?) {
-//        super.init(nibName: nibName, bundle: bundle)
-//        addObserver()
-//    }
-//    
-//    required init?(coder: NSCoder) {
-//        super.init(coder: coder)
-//        addObserver()
-//    }
-//    
-//    deinit {
-//        removeObserver()
-//    }
-//    
-//    private func addObserver() {
-//        NotificationCenter.default.addObserver(
-//            self,
-//            selector: #selector(updateAvatar(notification:)),
-//            name: ProfileImageService.didChangeNotification,
-//            object: nil
-//        )
-//    }
-//    
-//    private func removeObserver() {
-//        NotificationCenter.default.removeObserver(
-//            self,
-//            name: ProfileImageService.didChangeNotification,
-//            object: nil
-//        )
-//    }
-//    
-//    @objc
-//    private func updateAvatar(notification: Notification) {
-//        guard
-//            isViewLoaded,
-//            let userInfo = notification.userInfo,
-//            let profileImageURL = userInfo["URL"] as? String,
-//            let url = URL(string: profileImageURL)
-//        else { return }
-//        
-//        // TODO Kingfisher
-//    }
-    
     private func updateAvatar() {
         guard let profileImageURL = profileImageService.avatarURL,
-              let url = URL(string: profileImageURL)
+              let imageURL = URL(string: profileImageURL)
         else { return }
-        // TODO Обновить аватар, используя Kingfisher
+        
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage
+                .SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(
+            with: imageURL,
+            placeholder: placeholderImage,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage,
+                .forceRefresh
+            ]
+        ) { result in
+            switch result {
+            case .success(let value):
+                print(value.image)
+                print(value.cacheType)
+                print(value.source)
+            case .failure(let error):
+                print(error)
+            }}
+        
+        setupImageView()
     }
     
     override func viewDidLoad() {
@@ -71,11 +56,6 @@ final class ProfileViewController: UIViewController {
         setupTagLabel()
         setupStatusLabel()
         setupButton()
-        
-//        if let avatarURL = profileImageService.avatarURL,
-//           let url = URL(string: avatarURL) {
-//            // TODO
-//        }
         
         profileImageServiceObserver = NotificationCenter.default.addObserver(
             forName: ProfileImageService.didChangeNotification,

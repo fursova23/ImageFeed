@@ -28,21 +28,10 @@ final class WebViewViewController: UIViewController {
                  self.updateProgress()
              }
         )
-        
-        // «Старое» API для KVO:
-        //        webView.addObserver(
-        //            self,
-        //            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-        //            options: .new,
-        //            context: nil
-        //        )
-        //        updateProgress()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
     override func observeValue(
