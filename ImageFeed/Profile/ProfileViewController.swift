@@ -51,6 +51,8 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = .ypBlackIOS
+        
         setupImageView()
         setupNameLabel()
         setupTagLabel()
@@ -66,6 +68,7 @@ final class ProfileViewController: UIViewController {
             guard let self else { return }
             self.updateAvatar()
         }
+        
         updateAvatar()
         
         if let profile = profileService.profile {
@@ -75,14 +78,14 @@ final class ProfileViewController: UIViewController {
     
     private func updateProfileDetails(profile: Profile) {
         nameLabel.text = profile.name.isEmpty
-        ? "Имя не указано"
-        : profile.name
+            ? "Имя не указано"
+            : profile.name
         tagLabel.text = profile.loginName.isEmpty
-        ? "@неизвестный_пользователь"
-        : profile.loginName
+            ? "@неизвестный_пользователь"
+            : profile.loginName
         statusLabel.text = (profile.bio?.isEmpty ?? true)
-        ? "Профиль не заполнен"
-        : profile.bio
+            ? "Профиль не заполнен"
+            : profile.bio
     }
     
     private func setupImageView() {
@@ -158,7 +161,6 @@ final class ProfileViewController: UIViewController {
             button.topAnchor.constraint(equalTo: view.topAnchor, constant: 99),
             button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
         ])
-        
     }
     
     @objc
