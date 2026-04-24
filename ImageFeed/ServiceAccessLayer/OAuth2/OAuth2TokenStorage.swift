@@ -3,10 +3,13 @@ import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
     
+    // MARK: - Singleton
+    
     static let shared = OAuth2TokenStorage()
     
-    private init() {
-    }
+    // MARK: - Init
+    
+    private init() {}
 
     var token: String? {
         get {

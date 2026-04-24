@@ -3,6 +3,8 @@ import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
+    // MARK: - Properties
+    
     private lazy var imageView: UIImageView = UIImageView()
     private lazy var nameLabel: UILabel = UILabel()
     private lazy var tagLabel: UILabel = UILabel()
@@ -12,6 +14,38 @@ final class ProfileViewController: UIViewController {
     private final let profileImageService = ProfileImageService.shared
     
     private var profileImageServiceObserver: NSObjectProtocol?
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypBlackIOS
+        
+        setupImageView()
+        setupNameLabel()
+        setupTagLabel()
+        setupStatusLabel()
+        setupButton()
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) {
+            [weak self] _ in
+            guard let self else { return }
+            self.updateAvatar()
+        }
+        
+        updateAvatar()
+        
+        if let profile = profileService.profile {
+            updateProfileDetails(profile: profile)
+        }
+    }
+    
+    // MARK: - Private Methods
     
     private func updateAvatar() {
         guard let profileImageURL = profileImageService.avatarURL,
@@ -46,34 +80,6 @@ final class ProfileViewController: UIViewController {
             }}
         
         setupImageView()
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .ypBlackIOS
-        
-        setupImageView()
-        setupNameLabel()
-        setupTagLabel()
-        setupStatusLabel()
-        setupButton()
-        
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) {
-            [weak self] _ in
-            guard let self else { return }
-            self.updateAvatar()
-        }
-        
-        updateAvatar()
-        
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
     }
     
     private func updateProfileDetails(profile: Profile) {
@@ -162,6 +168,8 @@ final class ProfileViewController: UIViewController {
             button.centerYAnchor.constraint(equalTo: imageView.centerYAnchor)
         ])
     }
+    
+    // MARK: - Actions
     
     @objc
     private func didTapButton() {
