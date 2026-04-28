@@ -17,7 +17,7 @@ final class ProfileImageService {
         task?.cancel()
         
         guard let token = tokenStorage.token else {
-            print("Bearer токен отсутствует в UserDefaults")
+            print("Bearer токен не найден")
             completion(.failure(NSError(domain: "ProfileImageService", code: 401, userInfo: [NSLocalizedDescriptionKey: "Ошибка авторизации"])))
             return
         }
