@@ -1,13 +1,12 @@
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
     
-    var image: UIImage? {
+    var imageURL: String? {
         didSet {
-            guard isViewLoaded, let image else { return }
-            imageView.image = image
-            imageView.frame.size = image.size
-            rescaleAndCenterImageInScrollView(image: image)
+            guard isViewLoaded, let imageURL, let url = URL(string: imageURL) else { return }
+            loadImage(url: url)
         }
     }
     
@@ -19,10 +18,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
         
-        guard let image else { return }
-        imageView.image = image
-        imageView.frame.size = image.size
-        rescaleAndCenterImageInScrollView(image: image)
+        guard let imageURL, let url = URL(string: imageURL) else { return }
+        loadImage(url: url)
     }
     
     @IBAction private func didTapBackButton(_ sender: UIButton) {
@@ -30,7 +27,7 @@ final class SingleImageViewController: UIViewController {
     }
     
     @IBAction private func didTapShareButton(_ sender: UIButton) {
-        guard let image else { return }
+        guard let image = imageView.image else { return }
         let share = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         present(share, animated: true, completion: nil)
     }
@@ -52,6 +49,19 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
     
+    private func loadImage(url: URL) {
+        imageView.kf.setImage(with: url) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let value):
+                let image = value.image
+                imageView.frame.size = image.size
+                self.rescaleAndCenterImageInScrollView(image: image)
+            case .failure(let error):
+                print("[SingleImageViewController]: ошибка загрузки фотографии: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 extension SingleImageViewController: UIScrollViewDelegate {

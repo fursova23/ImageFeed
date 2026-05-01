@@ -1,18 +1,16 @@
 import UIKit
 
-final class ImageListService {
-    
+final class ImagesListService {
+    static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
+    private let urlSession = URLSession.shared
+    private let tokenStorage = OAuth2TokenStorage.shared
     private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
     private var task: URLSessionTask?
     private let perPage = 10
-    
-    static let shared = ImageListService()
-    private let urlSession = URLSession.shared
-    private let tokenStorage = OAuth2TokenStorage.shared
-    
+
     private init() {}
     
     func fetchPhotosNexPage() {
@@ -25,12 +23,10 @@ final class ImageListService {
         
         guard let token = tokenStorage.token else {
             print("Bearer токен не найден")
-//            completion(.failure(NSError(domain: "ImageListService", code: 401, userInfo: [NSLocalizedDescriptionKey: "Ошибка авторизации"])))
             return
         }
         
         guard let request = makeImageListRequest(page: nextPage, perPage: perPage, token: token) else {
-//            completion(.failure(URLError(.badURL)))
             return
         }
         
@@ -42,16 +38,13 @@ final class ImageListService {
                 DispatchQueue.main.async {
                     self.photos.append(contentsOf: photos)
                     NotificationCenter.default.post(
-                        name: ImageListService.didChangeNotification,
+                        name: ImagesListService.didChangeNotification,
                         object: self,
                         userInfo: nil
                     )
-//                    completion(.success(photos))
                 }
-                
             case .failure(let error):
-                print("[fetchPhotosNexPage]: \(error.localizedDescription)")
-//                completion(.failure(error))
+                print("[ImagesListService.fetchPhotosNexPage]: \(error.localizedDescription)")
             }
             
             self?.task = nil
@@ -59,7 +52,6 @@ final class ImageListService {
         
         self.task = task
         task.resume()
-        
     }
     
     private func makeImageListRequest(page pageNumber: Int, perPage count: Int, token: String) -> URLRequest? {
@@ -83,5 +75,4 @@ final class ImageListService {
         
         return request
     }
-    
 }
