@@ -4,6 +4,8 @@ import Kingfisher
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
     
+    weak var delegate: ImagesListDelegate?
+    
     @IBOutlet private var cellImage: UIImageView!
     @IBOutlet private var likeButton: UIButton!
     @IBOutlet private var dateLabel: UILabel!
@@ -14,7 +16,11 @@ final class ImagesListCell: UITableViewCell {
         cellImage.kf.indicatorType = .none
     }
     
-    func configure(imageURL: String?, date: String, isLiked: Bool, completion: (() -> Void)? = nil) {
+    @IBAction func likeButtonClicked(_ sender: UIButton) {
+        delegate?.imageListCellDidTapLike(self)
+    }
+    
+    func configure(imageURL: String?, date: String, isLiked: Bool) {
         cellImage.kf.indicatorType = .activity
         cellImage.kf.setImage(
             with: URL(string: imageURL ?? ""),
@@ -23,13 +29,18 @@ final class ImagesListCell: UITableViewCell {
                 .scaleFactor(UIScreen.main.scale),
                 .cacheOriginalImage
             ]
-        ) { result in
+        ) { [weak self] result in
+            guard let self else { return }
             if case .success = result {
-                completion?()
+                self.delegate?.imageListCellDidFinishLoading(self)
             }
         }
         
         dateLabel.text = date
-        likeButton.setImage(UIImage(resource: isLiked ? .active : .noActive),for: .normal)
+        setIsLiked(isLiked)
+    }
+    
+    func setIsLiked(_ isLiked: Bool) {
+        likeButton.setImage(UIImage(resource: isLiked ? .active : .noActive), for: .normal)
     }
 }

@@ -8,13 +8,57 @@ final class ImagesListService {
     private let tokenStorage = OAuth2TokenStorage.shared
     private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
-    private var task: URLSessionTask?
+    private var fetchPhotosTask: URLSessionTask?
+    private var changeLikeTask: URLSessionTask?
     private let perPage = 10
-
+    
     private init() {}
     
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        if changeLikeTask != nil {
+            return
+        }
+        
+        guard let token = tokenStorage.token else {
+            print("Bearer токен не найден")
+            return
+        }
+        
+        guard let request = makeChangeLikeRequest(photoId: photoId, isLike: isLike, token: token) else {
+            return
+        }
+        
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<LikeResult, Error>) in
+            guard let self else { return }
+            switch result {
+            case .success:
+                if let index = self.photos.firstIndex(where: { $0.id == photoId } ) {
+                    let photo = self.photos[index]
+                    let newPhoto = Photo(
+                        id: photo.id,
+                        size: photo.size,
+                        createdAt: photo.createdAt,
+                        welcomeDescription: photo.welcomeDescription,
+                        thumbImageURL: photo.thumbImageURL,
+                        largeImageURL: photo.largeImageURL,
+                        isLiked: isLike
+                    )
+                    self.photos = self.photos.withReplaced(itemAt: index, newValue: newPhoto)
+                    completion(.success(()))
+                }
+            case .failure(let error):
+                print("[ImagesListService.changeLike]: \(error.localizedDescription)")
+                completion(.failure(error))
+            }
+            self.changeLikeTask = nil
+        }
+        
+        self.changeLikeTask = task
+        task.resume()
+    }
+    
     func fetchPhotosNexPage() {
-        if task != nil {
+        if fetchPhotosTask != nil {
             return
         }
         
@@ -31,26 +75,23 @@ final class ImagesListService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
+            guard let self else { return }
             switch result {
             case .success(let data):
-                guard let self else { return }
                 let photos = data.map({Photo(from: $0)})
-                DispatchQueue.main.async {
-                    self.photos.append(contentsOf: photos)
-                    NotificationCenter.default.post(
-                        name: ImagesListService.didChangeNotification,
-                        object: self,
-                        userInfo: nil
-                    )
-                }
+                self.photos.append(contentsOf: photos)
+                NotificationCenter.default.post(
+                    name: ImagesListService.didChangeNotification,
+                    object: self,
+                    userInfo: nil
+                )
             case .failure(let error):
                 print("[ImagesListService.fetchPhotosNexPage]: \(error.localizedDescription)")
             }
-            
-            self?.task = nil
+            self.fetchPhotosTask = nil
         }
         
-        self.task = task
+        self.fetchPhotosTask = task
         task.resume()
     }
     
@@ -71,6 +112,19 @@ final class ImagesListService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
+    
+    private func makeChangeLikeRequest(photoId: String, isLike: Bool, token: String) -> URLRequest? {
+        guard let url = URL(string: "\(Constants.defaultBaseURLString)/photos/\(photoId)/like") else {
+            print("Ошибка создания URL для запроса изменения лайка фотографии")
+            return nil
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? "POST" : "DELETE"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         return request

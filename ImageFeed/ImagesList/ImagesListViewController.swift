@@ -2,15 +2,11 @@ import UIKit
 import Kingfisher
 
 final class ImagesListViewController: UIViewController {
-    
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
-    
-    @IBOutlet private var tableView: UITableView!
     
     private let imagesListService = ImagesListService.shared
     private var imagesListServiceObserver: NSObjectProtocol?
     private var photos: [Photo] = []
-    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -18,9 +14,15 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    @IBOutlet private var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        
+        // Отключен prefetch из-за конфликта с reloadRows
+        tableView.prefetchDataSource = nil
+        tableView.isPrefetchingEnabled = false
         
         imagesListServiceObserver = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
@@ -103,13 +105,13 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        imageListCell.delegate = self
+        
         imageListCell.configure(
-            imageURL: photos[indexPath.row].largeImageURL,
+            imageURL: photos[indexPath.row].thumbImageURL,
             date: dateFormatter.string(from: Date()),
-            isLiked: indexPath.row % 2 == 0
-        ) { [weak tableView] in
-            tableView?.reloadRows(at: [indexPath], with: .automatic)
-        }
+            isLiked: photos[indexPath.row].isLiked
+        )
         return imageListCell
     }
     
@@ -124,3 +126,40 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+extension ImagesListViewController: ImagesListDelegate {
+    func imageListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        UIBlockingProgressHUD.show()
+        imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                self.photos = self.imagesListService.photos
+                cell.setIsLiked(self.photos[indexPath.row].isLiked)
+                UIBlockingProgressHUD.dismiss()
+            case .failure(let error):
+                UIBlockingProgressHUD.dismiss()
+                print("[imageListCellDidTapLike]: Не удалось поменять статус лайка на фотографии -  \(error.localizedDescription)")
+                self.showChangeLikeErrorAlert()
+            }
+        }
+    }
+    
+    func imageListCellDidFinishLoading(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+}
+
+extension ImagesListViewController {
+    func showChangeLikeErrorAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось поставить лайк",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Ок", style: .default))
+        present(alert, animated: true)
+    }
+}
