@@ -50,15 +50,18 @@ final class SingleImageViewController: UIViewController {
     }
     
     private func loadImage(url: URL) {
+        UIBlockingProgressHUD.show()
         imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             guard let self else { return }
             switch result {
-            case .success(let value):
-                let image = value.image
+            case .success(let imageResult):
+                let image = imageResult.image
                 imageView.frame.size = image.size
                 self.rescaleAndCenterImageInScrollView(image: image)
             case .failure(let error):
                 print("[SingleImageViewController]: ошибка загрузки фотографии: \(error.localizedDescription)")
+                showErrorAlert(url: url)
             }
         }
     }
@@ -67,5 +70,21 @@ final class SingleImageViewController: UIViewController {
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
+    }
+}
+
+extension SingleImageViewController {
+    func showErrorAlert(url: URL) {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Попробовать ещё раз?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Не надо", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+            guard let self else { return }
+            self.loadImage(url: url)
+        })
+        present(alert, animated: true)
     }
 }

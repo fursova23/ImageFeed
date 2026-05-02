@@ -132,14 +132,13 @@ extension ImagesListViewController: ImagesListDelegate {
         let photo = photos[indexPath.row]
         UIBlockingProgressHUD.show()
         imagesListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
             guard let self else { return }
             switch result {
             case .success:
                 self.photos = self.imagesListService.photos
                 cell.setIsLiked(self.photos[indexPath.row].isLiked)
-                UIBlockingProgressHUD.dismiss()
             case .failure(let error):
-                UIBlockingProgressHUD.dismiss()
                 print("[imageListCellDidTapLike]: Не удалось поменять статус лайка на фотографии -  \(error.localizedDescription)")
                 self.showChangeLikeErrorAlert()
             }
