@@ -95,6 +95,11 @@ final class ImagesListService {
         task.resume()
     }
     
+    func clean() {
+        photos = []
+        lastLoadedPage = nil
+    }
+    
     private func makeImageListRequest(page pageNumber: Int, perPage count: Int, token: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: "\(Constants.defaultBaseURLString)/photos") else {
             print("Ошибка создания URLComponents для запроса получения ленты фотографий")

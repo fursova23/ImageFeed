@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
     
     private final let profileService = ProfileService.shared
     private final let profileImageService = ProfileImageService.shared
+    private final let profileLogoutService = ProfileLogoutService.shared
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -173,10 +174,7 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func didTapButton() {
-        nameLabel.removeFromSuperview()
-        tagLabel.removeFromSuperview()
-        statusLabel.removeFromSuperview()
-        imageView.image = UIImage(named: "Stub")
+        profileLogoutService.logout()
     }
     
 }
