@@ -1,6 +1,8 @@
 import UIKit
 
 struct Photo {
+    private static let formatter = ISO8601DateFormatter()
+    
     let id: String
     let size: CGSize
     let createdAt: Date?
@@ -14,12 +16,7 @@ extension Photo {
     init(from result: PhotoResult) {
         id = result.id
         size = CGSize(width: result.width, height: result.height)
-        
-        let formatter = ISO8601DateFormatter()
-        createdAt = result.createdAt.flatMap {
-            formatter.date(from: $0)
-        }
-        
+        createdAt = result.createdAt.flatMap { Photo.formatter.date(from: $0) }
         welcomeDescription = result.description
         thumbImageURL = result.urls.thumb
         largeImageURL = result.urls.full

@@ -7,9 +7,10 @@ final class ImagesListViewController: UIViewController {
     private let imagesListService = ImagesListService.shared
     private var imagesListServiceObserver: NSObjectProtocol?
     private var photos: [Photo] = []
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
+        formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter
     }()
@@ -109,7 +110,7 @@ extension ImagesListViewController: UITableViewDataSource {
         
         imageListCell.configure(
             imageURL: photos[indexPath.row].thumbImageURL,
-            date: dateFormatter.string(from: Date()),
+            date: photos[indexPath.row].createdAt.map { dateFormatter.string(from: $0) }  ?? "",
             isLiked: photos[indexPath.row].isLiked
         )
         return imageListCell
