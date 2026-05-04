@@ -1,13 +1,10 @@
 import Foundation
 
 final class ProfileService {
-    
     static let shared = ProfileService()
     
     private let urlSession = URLSession.shared
-    
     private var task: URLSessionTask?
-    
     private(set) var profile: Profile?
     
     private init() {}
@@ -36,6 +33,10 @@ final class ProfileService {
         
         self.task = task
         task.resume()
+    }
+    
+    func clean() {
+        profile = nil
     }
     
     private func makeProfileRequest(authToken: String) -> URLRequest? {

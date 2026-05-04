@@ -1,19 +1,31 @@
 import UIKit
 import CoreData
+import ProgressHUD
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    // MARK: - App Lifecycle
+    // MARK: - Properties
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "ImageFeed")
+        
+        container.loadPersistentStores { _, error in
+            if let error {
+                assertionFailure("CoreData error: \(error)")
+            }
+        }
+        
+        return container
+    }()
     
+    // MARK: - UIApplicationDelegate
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        true
+        configureProgressHUD()
+        return true
     }
-    
-    // MARK: - Scene Configuration
     
     func application(
         _ application: UIApplication,
@@ -31,19 +43,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: - Core Data
-    
-    lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "ImageFeed")
-        
-        container.loadPersistentStores { _, error in
-            if let error {
-                assertionFailure("CoreData error: \(error)")
-            }
-        }
-        
-        return container
-    }()
-    
     func saveContext () {
         let context = persistentContainer.viewContext
         guard context.hasChanges else { return }
@@ -53,5 +52,12 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             assertionFailure("Failed to save context: \(error)")
         }
+    }
+    
+    // MARK: - Private Methods
+    private func configureProgressHUD() {
+        ProgressHUD.animationType = .activityIndicator
+        ProgressHUD.colorHUD = .white
+        ProgressHUD.colorAnimation = .black
     }
 }

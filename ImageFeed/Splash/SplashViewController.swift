@@ -2,8 +2,7 @@ import UIKit
 
 final class SplashViewController: UIViewController {
     
-    private let storage = OAuth2TokenStorage.shared
-    
+    private final let storage = OAuth2TokenStorage.shared
     private final let profileService = ProfileService.shared
     private final let profileImageService = ProfileImageService.shared
     

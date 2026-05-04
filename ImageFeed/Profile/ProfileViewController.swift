@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
     
     private final let profileService = ProfileService.shared
     private final let profileImageService = ProfileImageService.shared
+    private final let profileLogoutService = ProfileLogoutService.shared
     
     private var profileImageServiceObserver: NSObjectProtocol?
     
@@ -173,10 +174,21 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func didTapButton() {
-        nameLabel.removeFromSuperview()
-        tagLabel.removeFromSuperview()
-        statusLabel.removeFromSuperview()
-        imageView.image = UIImage(named: "Stub")
+        showLogoutAlert()
     }
-    
+}
+
+extension ProfileViewController {
+    func showLogoutAlert() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйти?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Да", style: .destructive) { [weak self] _ in
+            self?.profileLogoutService.logout()
+        })
+        present(alert, animated: true)
+    }
 }
