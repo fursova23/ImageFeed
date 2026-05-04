@@ -6,9 +6,9 @@ final class ImagesListCell: UITableViewCell {
     
     weak var delegate: ImagesListDelegate?
     
-    @IBOutlet private var cellImage: UIImageView!
-    @IBOutlet private var likeButton: UIButton!
-    @IBOutlet private var dateLabel: UILabel!
+    @IBOutlet weak private var cellImage: UIImageView!
+    @IBOutlet weak private var likeButton: UIButton!
+    @IBOutlet weak private var dateLabel: UILabel!
     
     override func prepareForReuse() {
         super.prepareForReuse()

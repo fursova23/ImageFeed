@@ -34,16 +34,9 @@ final class ImagesListService {
             case .success:
                 if let index = self.photos.firstIndex(where: { $0.id == photoId } ) {
                     let photo = self.photos[index]
-                    let newPhoto = Photo(
-                        id: photo.id,
-                        size: photo.size,
-                        createdAt: photo.createdAt,
-                        welcomeDescription: photo.welcomeDescription,
-                        thumbImageURL: photo.thumbImageURL,
-                        largeImageURL: photo.largeImageURL,
-                        isLiked: isLike
-                    )
-                    self.photos = self.photos.withReplaced(itemAt: index, newValue: newPhoto)
+                    let updatedPhoto = photo.withLiked(isLike)
+                    
+                    self.photos = self.photos.withReplaced(itemAt: index, newValue: updatedPhoto)
                     completion(.success(()))
                 }
             case .failure(let error):
@@ -57,7 +50,7 @@ final class ImagesListService {
         task.resume()
     }
     
-    func fetchPhotosNexPage() {
+    func fetchPhotosNextPage() {
         if fetchPhotosTask != nil {
             return
         }
