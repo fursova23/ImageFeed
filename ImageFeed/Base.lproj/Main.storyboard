@@ -214,6 +214,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t9t-Tl-6VU" userLabel="LoginButton">
                                 <rect key="frame" x="16" y="668" width="370" height="48"/>
                                 <color key="backgroundColor" name="YP White (iOS)"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="sic-DP-0dy"/>
                                 </constraints>
@@ -272,7 +273,7 @@
         <!--Web View View Controller-->
         <scene sceneID="ptt-Fj-Nai">
             <objects>
-                <viewController id="FXS-Iv-8LJ" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="FXS-Iv-8LJ" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Mbs-O3-yCu">
                         <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -302,7 +303,7 @@
                             <constraint firstItem="NDa-Rc-vpL" firstAttribute="leading" secondItem="Mbs-O3-yCu" secondAttribute="leading" id="qSD-qm-DHu"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="qg2-Yn-1sk"/>
+                    <navigationItem key="navigationItem" customizationIdentifier="" id="qg2-Yn-1sk"/>
                     <connections>
                         <outlet property="progressView" destination="dXM-Tq-7ax" id="3ha-i5-AG4"/>
                         <outlet property="webView" destination="NDa-Rc-vpL" id="Icq-74-7uV"/>

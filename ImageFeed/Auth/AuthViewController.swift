@@ -31,6 +31,10 @@ final class AuthViewController: UIViewController {
             return
         }
         
+        let authHelper = AuthHelper()
+        let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+        webViewViewController.presenter = webViewPresenter
+        webViewPresenter.view = webViewViewController
         webViewViewController.delegate = self
     }
     
@@ -41,6 +45,7 @@ final class AuthViewController: UIViewController {
         navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(resource: .navBackButton)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         navigationItem.backBarButtonItem?.tintColor = UIColor(resource: .ypBlackIOS)
+        navigationItem.backBarButtonItem?.accessibilityIdentifier = "nav back button white"
     }
     
 }
