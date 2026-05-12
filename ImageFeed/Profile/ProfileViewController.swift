@@ -5,16 +5,13 @@ final class ProfileViewController: UIViewController {
     
     // MARK: - Properties
     
+    var presenter: ProfilePresenterProtocol!
+    
     private lazy var imageView: UIImageView = UIImageView()
     private lazy var nameLabel: UILabel = UILabel()
     private lazy var tagLabel: UILabel = UILabel()
     private lazy var statusLabel: UILabel = UILabel()
     
-    private final let profileService = ProfileService.shared
-    private final let profileImageService = ProfileImageService.shared
-    private final let profileLogoutService = ProfileLogoutService.shared
-    
-    private var profileImageServiceObserver: NSObjectProtocol?
     
     // MARK: - Lifecycle
     
@@ -29,71 +26,15 @@ final class ProfileViewController: UIViewController {
         setupStatusLabel()
         setupButton()
         
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) {
-            [weak self] _ in
-            guard let self else { return }
-            self.updateAvatar()
-        }
-        
-        updateAvatar()
-        
-        if let profile = profileService.profile {
-            updateProfileDetails(profile: profile)
-        }
+        presenter?.viewDidLoad()
+    }
+    
+    func configure(_ presenter: ProfilePresenterProtocol) {
+        self.presenter = presenter
+        self.presenter.view = self
     }
     
     // MARK: - Private Methods
-    
-    private func updateAvatar() {
-        guard let profileImageURL = profileImageService.avatarURL,
-              let imageURL = URL(string: profileImageURL)
-        else { return }
-        
-        let placeholderImage = UIImage(systemName: "person.circle.fill")?
-            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
-            .withConfiguration(UIImage
-                .SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
-        
-        let processor = RoundCornerImageProcessor(cornerRadius: 35)
-
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(
-            with: imageURL,
-            placeholder: placeholderImage,
-            options: [
-                .processor(processor),
-                .scaleFactor(UIScreen.main.scale),
-                .cacheOriginalImage,
-                .forceRefresh
-            ]
-        ) { result in
-            switch result {
-            case .success(let value):
-                print(value.image)
-                print(value.cacheType)
-                print(value.source)
-            case .failure(let error):
-                print(error)
-            }}
-        
-        setupImageView()
-    }
-    
-    private func updateProfileDetails(profile: Profile) {
-        nameLabel.text = profile.name.isEmpty
-            ? "Имя не указано"
-            : profile.name
-        tagLabel.text = profile.loginName.isEmpty
-            ? "@неизвестный_пользователь"
-            : profile.loginName
-        statusLabel.text = (profile.bio?.isEmpty ?? true)
-            ? "Профиль не заполнен"
-            : profile.bio
-    }
     
     private func setupImageView() {
         imageView.tintColor = .gray
@@ -160,6 +101,7 @@ final class ProfileViewController: UIViewController {
         
         button.tintColor = .ypRedIOS
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "logout button"
         view.addSubview(button)
         NSLayoutConstraint.activate([
             button.widthAnchor.constraint(equalToConstant: 44),
@@ -178,6 +120,37 @@ final class ProfileViewController: UIViewController {
     }
 }
 
+// MARK: - ProfileViewControllerProtocol
+
+extension ProfileViewController: ProfileViewControllerProtocol {
+    func updateAvatar(imageURL: URL) {
+        let placeholderImage = UIImage(systemName: "person.circle.fill")?
+            .withTintColor(.lightGray, renderingMode: .alwaysOriginal)
+            .withConfiguration(UIImage
+                .SymbolConfiguration(pointSize: 70, weight: .regular, scale: .large))
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 35)
+        
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(
+            with: imageURL,
+            placeholder: placeholderImage,
+            options: [
+                .processor(processor),
+                .scaleFactor(UIScreen.main.scale),
+                .cacheOriginalImage,
+                .forceRefresh
+            ]
+        )
+    }
+    
+    func updateProfileDetails(name: String, login: String, bio: String?) {
+        nameLabel.text = name
+        tagLabel.text = login
+        statusLabel.text = bio
+    }
+}
+
 extension ProfileViewController {
     func showLogoutAlert() {
         let alert = UIAlertController(
@@ -187,7 +160,7 @@ extension ProfileViewController {
         )
         alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
         alert.addAction(UIAlertAction(title: "Да", style: .destructive) { [weak self] _ in
-            self?.profileLogoutService.logout()
+            self?.presenter?.didTapLogout()
         })
         present(alert, animated: true)
     }
