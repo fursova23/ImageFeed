@@ -19,6 +19,4 @@ final class ProfilePresenterSpy: ProfilePresenterProtocol {
     func didTapLogout() {
         didTapLoginCalled = true
     }
-    
-    
 }

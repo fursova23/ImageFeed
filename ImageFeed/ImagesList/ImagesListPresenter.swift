@@ -2,13 +2,14 @@ import UIKit
 
 final class ImagesListPresenter: ImagesListPresenterProtocol {
     var view: ImagesListViewControllerProtocol?
-    
-    // MARK: - Properties
-    private let imagesListService = ImagesListService.shared
-    private var imagesListServiceObserver: NSObjectProtocol?
     private(set) var photos: [Photo] = []
     
-    var photosCount: Int { photos.count }
+    var photosCount: Int {
+        photos.count
+    }
+    
+    private let imagesListService = ImagesListService.shared
+    private var imagesListServiceObserver: NSObjectProtocol?
     
     func photo(at IndexPath: IndexPath) -> Photo {
         photos[IndexPath.row]
